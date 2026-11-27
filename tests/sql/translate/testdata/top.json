@@ -1,0 +1,122 @@
+[
+  {
+    "name": "ascending",
+    "sql": "SELECT TOP (3) id, score FROM leafkit_translate ORDER BY id",
+    "target": "SELECT \"id\", \"score\" FROM \"leafkit_translate\" ORDER BY \"id\" LIMIT 3",
+    "rows": [
+      [
+        1,
+        10
+      ],
+      [
+        2,
+        20
+      ],
+      [
+        3,
+        20
+      ]
+    ]
+  },
+  {
+    "name": "descending-filter",
+    "sql": "SELECT TOP (2) [r].[id], [r].[score] FROM [leafkit_translate] AS [r] WHERE [r].[id] > 1 ORDER BY [r].[id] DESC",
+    "target": "SELECT \"r\".\"id\", \"r\".\"score\" FROM \"leafkit_translate\" AS \"r\" WHERE \"r\".\"id\" > 1 ORDER BY \"r\".\"id\" DESC LIMIT 2",
+    "rows": [
+      [
+        6,
+        40
+      ],
+      [
+        5,
+        30
+      ]
+    ]
+  },
+  {
+    "name": "zero",
+    "sql": "SELECT TOP (0) id, score FROM leafkit_translate ORDER BY id",
+    "target": "SELECT \"id\", \"score\" FROM \"leafkit_translate\" ORDER BY \"id\" LIMIT 0",
+    "rows": []
+  },
+  {
+    "name": "over-cardinality",
+    "sql": "SELECT TOP (9223372036854775807) id, score FROM leafkit_translate ORDER BY id",
+    "target": "SELECT \"id\", \"score\" FROM \"leafkit_translate\" ORDER BY \"id\" LIMIT 9223372036854775807",
+    "rows": [
+      [
+        1,
+        10
+      ],
+      [
+        2,
+        20
+      ],
+      [
+        3,
+        20
+      ],
+      [
+        4,
+        20
+      ],
+      [
+        5,
+        30
+      ],
+      [
+        6,
+        40
+      ]
+    ]
+  },
+  {
+    "name": "qualified-shadow-control",
+    "sql": "SELECT TOP (2) id AS original_id, score AS id FROM leafkit_translate ORDER BY leafkit_translate.id",
+    "target": "SELECT \"id\" AS \"original_id\", \"score\" AS \"id\" FROM \"leafkit_translate\" ORDER BY \"leafkit_translate\".\"id\" LIMIT 2",
+    "rows": [
+      [
+        1,
+        10
+      ],
+      [
+        2,
+        20
+      ]
+    ]
+  },
+  {
+    "name": "proven-key-alias",
+    "sql": "SELECT TOP (2) id AS id, score FROM leafkit_translate ORDER BY id",
+    "target": "SELECT \"id\" AS \"id\", \"score\" FROM \"leafkit_translate\" ORDER BY \"id\" LIMIT 2",
+    "rows": [
+      [
+        1,
+        10
+      ],
+      [
+        2,
+        20
+      ]
+    ]
+  },
+  {
+    "name": "native-star",
+    "sql": "SELECT TOP (3) * FROM leafkit_translate ORDER BY id",
+    "target": "SELECT * FROM \"leafkit_translate\" ORDER BY \"id\" LIMIT 3",
+    "rows": [
+      [
+        1,
+        10
+      ],
+      [
+        2,
+        20
+      ],
+      [
+        3,
+        20
+      ]
+    ]
+  }
+]

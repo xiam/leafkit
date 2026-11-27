@@ -1,0 +1,59 @@
+[
+  {
+    "name": "native join and backticks",
+    "sql": "select `u`.`id` from `users` AS u straight_join `teams` AS t ON u.id = t.id;",
+    "tree": "(sql:file (sql:select (sql:projection (sql:identifier (sql:name \"u\") (sql:name \"id\"))) (sql:table (sql:identifier (sql:name \"users\")) (sql:name \"u\")) (mysql:straight-join (sql:table (sql:identifier (sql:name \"teams\")) (sql:name \"t\")) (sql:comparison (sql:identifier (sql:name \"u\") (sql:name \"id\")) (sql:operator \"=\") (sql:identifier (sql:name \"t\") (sql:name \"id\"))))))",
+    "printed": "SELECT \"u\".\"id\" FROM \"users\" AS u STRAIGHT_JOIN \"teams\" AS t ON u.id = t.id",
+    "tables": [
+      "users",
+      "teams"
+    ]
+  },
+  {
+    "name": "unconditional ordered join",
+    "sql": "SELECT * FROM left_table STRAIGHT_JOIN right_table",
+    "tree": "(sql:file (sql:select (sql:projection (sql:star)) (sql:table (sql:identifier (sql:name \"left_table\"))) (mysql:straight-join (sql:table (sql:identifier (sql:name \"right_table\"))))))",
+    "printed": "SELECT * FROM left_table STRAIGHT_JOIN right_table",
+    "tables": [
+      "left_table",
+      "right_table"
+    ]
+  },
+  {
+    "name": "escaped and unicode names",
+    "sql": "SELECT `a``b`, `名` FROM `A``B`",
+    "tree": "(sql:file (sql:select (sql:projection (sql:identifier (sql:name \"a`b\"))) (sql:projection (sql:identifier (sql:name \"名\"))) (sql:table (sql:identifier (sql:name \"A`B\")))))",
+    "printed": "SELECT \"a`b\", \"名\" FROM \"A`B\"",
+    "tables": [
+      "A`B"
+    ]
+  },
+  {
+    "name": "missing ordered join table",
+    "sql": "SELECT id FROM users STRAIGHT_JOIN",
+    "tree": "(sql:file (leafkit:error))",
+    "printed": "",
+    "tables": [],
+    "diagnostic": {
+      "start": 0,
+      "end": 34,
+      "at": 34,
+      "found": "<eof>",
+      "expected": [
+        "sql:name",
+        "sql:quoted-name"
+      ]
+    }
+  },
+  {
+    "name": "mixed join chain",
+    "sql": "SELECT * FROM a INNER JOIN b ON a.id = b.id STRAIGHT_JOIN c ON b.id = c.id",
+    "printed": "SELECT * FROM a INNER JOIN b ON a.id = b.id STRAIGHT_JOIN c ON b.id = c.id",
+    "tables": [
+      "a",
+      "b",
+      "c"
+    ],
+    "tree": "(sql:file (sql:select (sql:projection (sql:star)) (sql:table (sql:identifier (sql:name \"a\"))) (sql:inner-join (sql:table (sql:identifier (sql:name \"b\"))) (sql:comparison (sql:identifier (sql:name \"a\") (sql:name \"id\")) (sql:operator \"=\") (sql:identifier (sql:name \"b\") (sql:name \"id\")))) (mysql:straight-join (sql:table (sql:identifier (sql:name \"c\"))) (sql:comparison (sql:identifier (sql:name \"b\") (sql:name \"id\")) (sql:operator \"=\") (sql:identifier (sql:name \"c\") (sql:name \"id\"))))))"
+  }
+]

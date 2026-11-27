@@ -1,0 +1,4 @@
+{
+  "sql": "SELECT TOP (2) id AS original_id, score AS id FROM leafkit_translate ORDER BY id",
+  "unchecked_target": "SELECT \"id\" AS \"original_id\", \"score\" AS \"id\" FROM \"leafkit_translate\" ORDER BY \"id\" LIMIT 2"
+}

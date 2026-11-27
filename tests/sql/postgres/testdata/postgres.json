@@ -1,0 +1,26 @@
+[
+  {
+    "name": "distinct on",
+    "sql": "select distinct on (id) id from users order by id, stamp desc;",
+    "tree": "(sql:file (sql:select (postgres:distinct-on (sql:identifier (sql:name \"id\"))) (sql:projection (sql:identifier (sql:name \"id\"))) (sql:table (sql:identifier (sql:name \"users\"))) (sql:order (sql:identifier (sql:name \"id\"))) (sql:order (sql:identifier (sql:name \"stamp\")) (sql:direction \"DESC\"))))",
+    "printed": "SELECT DISTINCT ON (id) id FROM users ORDER BY id, stamp DESC"
+  },
+  {
+    "name": "dollar string",
+    "sql": "SELECT $tag$it's λ$tag$ FROM users",
+    "tree": "(sql:file (sql:select (sql:projection (sql:string \"it's λ\")) (sql:table (sql:identifier (sql:name \"users\")))))",
+    "printed": "SELECT 'it''s λ' FROM users"
+  },
+  {
+    "name": "empty distinct on",
+    "sql": "SELECT DISTINCT ON () id FROM users",
+    "tree": "(sql:file (leafkit:error))",
+    "diagnostic": {"start": 0, "end": 35, "at": 20, "found": ")"}
+  },
+  {
+    "name": "unclosed tagged literal",
+    "sql": "SELECT $tag$unclosed FROM users",
+    "tree": "(sql:file (leafkit:error))",
+    "diagnostic": {"start": 0, "end": 31, "at": 7, "found": "$"}
+  }
+]
