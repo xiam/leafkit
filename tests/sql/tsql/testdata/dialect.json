@@ -1,0 +1,38 @@
+[
+  {
+    "name": "top",
+    "sql": "SELECT TOP (2) id FROM users",
+    "tree": "(sql:file (sql:select (tsql:top (sql:number \"2\")) (sql:projection (sql:identifier (sql:name \"id\"))) (sql:table (sql:identifier (sql:name \"users\")))))",
+    "printed": "SELECT TOP (2) id FROM users"
+  },
+  {
+    "name": "ties",
+    "sql": "select top (2) with ties id from users order by score",
+    "tree": "(sql:file (sql:select (tsql:top (sql:number \"2\") (tsql:with-ties)) (sql:projection (sql:identifier (sql:name \"id\"))) (sql:table (sql:identifier (sql:name \"users\"))) (sql:order (sql:identifier (sql:name \"score\")))))",
+    "printed": "SELECT TOP (2) WITH TIES id FROM users ORDER BY score"
+  },
+  {
+    "name": "distinct zero",
+    "sql": "SELECT DISTINCT TOP (0) * FROM users",
+    "tree": "(sql:file (sql:select (sql:distinct) (tsql:top (sql:number \"0\")) (sql:projection (sql:star)) (sql:table (sql:identifier (sql:name \"users\")))))",
+    "printed": "SELECT DISTINCT TOP (0) * FROM users"
+  },
+  {
+    "name": "brackets",
+    "sql": "SELECT [a]]b], [名] FROM [User]]s]",
+    "tree": "(sql:file (sql:select (sql:projection (sql:identifier (sql:name \"a]b\"))) (sql:projection (sql:identifier (sql:name \"名\"))) (sql:table (sql:identifier (sql:name \"User]s\")))))",
+    "printed": "SELECT \"a]b\", \"名\" FROM \"User]s\""
+  },
+  {
+    "name": "escaped closing bracket",
+    "sql": "SELECT [x]]] FROM [t]",
+    "tree": "(sql:file (sql:select (sql:projection (sql:identifier (sql:name \"x]\"))) (sql:table (sql:identifier (sql:name \"t\")))))",
+    "printed": "SELECT \"x]\" FROM \"t\""
+  },
+  {
+    "name": "trivia and keyword boundaries",
+    "sql": "SELECT /*lead*/ TOP (001) top_name FROM with_ties --eof",
+    "tree": "(sql:file (sql:select (tsql:top (sql:number \"001\")) (sql:projection (sql:identifier (sql:name \"top_name\"))) (sql:table (sql:identifier (sql:name \"with_ties\")))))",
+    "printed": "SELECT TOP (001) top_name FROM with_ties"
+  }
+]

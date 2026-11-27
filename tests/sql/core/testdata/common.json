@@ -1,0 +1,179 @@
+[
+  {
+    "name": "projection",
+    "sql": "select ID from Users;",
+    "tree": "(sql:file (sql:select (sql:projection (sql:identifier (sql:name \"id\"))) (sql:table (sql:identifier (sql:name \"users\")))))",
+    "printed": "SELECT ID FROM Users",
+    "tables": [
+      "users"
+    ]
+  },
+  {
+    "name": "wildcard",
+    "sql": "SELECT DISTINCT * FROM app.users",
+    "tree": "(sql:file (sql:select (sql:distinct) (sql:projection (sql:star)) (sql:table (sql:identifier (sql:name \"app\") (sql:name \"users\")))))",
+    "printed": "SELECT DISTINCT * FROM app.users",
+    "tables": [
+      "app.users"
+    ]
+  },
+  {
+    "name": "joins and clauses",
+    "sql": "SELECT DISTINCT u.id AS user_id, t.name FROM app.users AS u INNER JOIN teams AS t ON u.team_id = t.id WHERE t.active >= 1 ORDER BY t.name ASC, u.id DESC;",
+    "tree": "(sql:file (sql:select (sql:distinct) (sql:projection (sql:identifier (sql:name \"u\") (sql:name \"id\")) (sql:name \"user_id\")) (sql:projection (sql:identifier (sql:name \"t\") (sql:name \"name\"))) (sql:table (sql:identifier (sql:name \"app\") (sql:name \"users\")) (sql:name \"u\")) (sql:inner-join (sql:table (sql:identifier (sql:name \"teams\")) (sql:name \"t\")) (sql:comparison (sql:identifier (sql:name \"u\") (sql:name \"team_id\")) (sql:operator \"=\") (sql:identifier (sql:name \"t\") (sql:name \"id\")))) (sql:comparison (sql:identifier (sql:name \"t\") (sql:name \"active\")) (sql:operator \">=\") (sql:number \"1\")) (sql:order (sql:identifier (sql:name \"t\") (sql:name \"name\")) (sql:direction \"ASC\")) (sql:order (sql:identifier (sql:name \"u\") (sql:name \"id\")) (sql:direction \"DESC\"))))",
+    "printed": "SELECT DISTINCT u.id AS user_id, t.name FROM app.users AS u INNER JOIN teams AS t ON u.team_id = t.id WHERE t.active >= 1 ORDER BY t.name ASC, u.id DESC",
+    "tables": [
+      "app.users",
+      "teams"
+    ]
+  },
+  {
+    "name": "quote escapes and unicode",
+    "sql": "SELECT \"a\"\"b\" AS \"名\", 'it''s λ', 12.50 FROM \"User\" WHERE \"a\"\"b\" <> 'x\\y'",
+    "tree": "(sql:file (sql:select (sql:projection (sql:identifier (sql:name \"a\\\"b\")) (sql:name \"名\")) (sql:projection (sql:string \"it's λ\")) (sql:projection (sql:number \"12.50\")) (sql:table (sql:identifier (sql:name \"User\"))) (sql:comparison (sql:identifier (sql:name \"a\\\"b\")) (sql:operator \"<>\") (sql:string \"x\\\\y\"))))",
+    "printed": "SELECT \"a\"\"b\" AS \"名\", 'it''s λ', 12.50 FROM \"User\" WHERE \"a\"\"b\" <> 'x\\y'",
+    "tables": [
+      "User"
+    ]
+  },
+  {
+    "name": "comments and keyword boundaries",
+    "sql": "-- lead\nSeLeCt selected, '' /* gap */ FROM order_by WHERE selected != 0 ORDER BY selected -- eof",
+    "tree": "(sql:file (sql:select (sql:projection (sql:identifier (sql:name \"selected\"))) (sql:projection (sql:string \"\")) (sql:table (sql:identifier (sql:name \"order_by\"))) (sql:comparison (sql:identifier (sql:name \"selected\")) (sql:operator \"<>\") (sql:number \"0\")) (sql:order (sql:identifier (sql:name \"selected\")))))",
+    "printed": "SELECT selected, '' FROM order_by WHERE selected <> 0 ORDER BY selected",
+    "tables": [
+      "order_by"
+    ]
+  },
+  {
+    "name": "missing projection",
+    "sql": "SELECT FROM users",
+    "tree": "(sql:file (leafkit:error))",
+    "printed": "",
+    "tables": [],
+    "diagnostic": {
+      "at": 7,
+      "found": "FROM",
+      "expected": [
+        "sql:*",
+        "sql:name",
+        "sql:quoted-name",
+        "sql:string",
+        "sql:number"
+      ],
+      "start": 0,
+      "end": 17
+    }
+  },
+  {
+    "name": "trailing projection comma",
+    "sql": "SELECT id, FROM users",
+    "tree": "(sql:file (leafkit:error))",
+    "printed": "",
+    "tables": [],
+    "diagnostic": {
+      "at": 11,
+      "found": "FROM",
+      "expected": [
+        "sql:*",
+        "sql:name",
+        "sql:quoted-name",
+        "sql:string",
+        "sql:number"
+      ],
+      "start": 0,
+      "end": 21
+    }
+  },
+  {
+    "name": "missing table",
+    "sql": "SELECT id FROM",
+    "tree": "(sql:file (leafkit:error))",
+    "printed": "",
+    "tables": [],
+    "diagnostic": {
+      "at": 14,
+      "found": "<eof>",
+      "expected": [
+        "sql:name",
+        "sql:quoted-name"
+      ],
+      "start": 0,
+      "end": 14
+    }
+  },
+  {
+    "name": "missing comparison operand",
+    "sql": "SELECT id FROM users WHERE id =",
+    "tree": "(sql:file (leafkit:error))",
+    "printed": "",
+    "tables": [],
+    "diagnostic": {
+      "at": 31,
+      "found": "<eof>",
+      "expected": [
+        "sql:name",
+        "sql:quoted-name",
+        "sql:string",
+        "sql:number"
+      ],
+      "start": 0,
+      "end": 31
+    }
+  },
+  {
+    "name": "missing order expression",
+    "sql": "SELECT id FROM users ORDER BY",
+    "tree": "(sql:file (leafkit:error))",
+    "printed": "",
+    "tables": [],
+    "diagnostic": {
+      "at": 29,
+      "found": "<eof>",
+      "expected": [
+        "sql:name",
+        "sql:quoted-name",
+        "sql:string",
+        "sql:number"
+      ],
+      "start": 0,
+      "end": 29
+    }
+  },
+  {
+    "name": "unsupported tail",
+    "sql": "SELECT id FROM users LIMIT 2",
+    "tree": "(sql:file (sql:select (sql:projection (sql:identifier (sql:name \"id\"))) (sql:table (sql:identifier (sql:name \"users\")))) (leafkit:error))",
+    "printed": "",
+    "tables": [],
+    "diagnostic": {
+      "at": 21,
+      "found": "LIMIT",
+      "expected": [
+        "<eof>"
+      ],
+      "start": 20,
+      "end": 28
+    }
+  },
+  {
+    "name": "unterminated literal",
+    "sql": "SELECT 'unclosed FROM users",
+    "tree": "(sql:file (leafkit:error))",
+    "printed": "",
+    "tables": [],
+    "diagnostic": {
+      "at": 7,
+      "found": "'",
+      "expected": [
+        "sql:*",
+        "sql:name",
+        "sql:quoted-name",
+        "sql:string",
+        "sql:number"
+      ],
+      "start": 0,
+      "end": 27
+    }
+  }
+]

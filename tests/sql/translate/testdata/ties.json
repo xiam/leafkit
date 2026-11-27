@@ -1,0 +1,6 @@
+{
+  "sql":"SELECT TOP (3) WITH TIES score FROM leafkit_translate ORDER BY score",
+  "lossy":"SELECT score FROM leafkit_translate ORDER BY score LIMIT 3",
+  "source_rows":[[10],[20],[20],[20]],
+  "lossy_rows":[[10],[20],[20]]
+}

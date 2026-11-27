@@ -1,0 +1,28 @@
+[
+  {
+    "name": "small",
+    "sha256": "087e8e080f8bdbdf24334883d85cea2a26036710ded134e3f9c0d157be1a5f20",
+    "tables": [
+      "users"
+    ]
+  },
+  {
+    "name": "joins",
+    "sha256": "8b281a63f87b0668a4b7f4dbb68b3071fa35213e11e33da073e8947eb8290571",
+    "tables": [
+      "app.users",
+      "app.teams"
+    ]
+  },
+  {
+    "name": "large",
+    "sha256": "1cdaef0ef4e4af3cb6a391935432f398c03f78e3d2cdd2dded2372e20ba533bc",
+    "tables": [
+      "bench.table0",
+      "bench.table1",
+      "bench.table2",
+      "bench.table3",
+      "bench.table4"
+    ]
+  }
+]
