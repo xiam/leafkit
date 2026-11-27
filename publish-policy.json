@@ -1,0 +1,14 @@
+{
+  "blocked_paths": [
+    "/.ai_review",
+    "/.ai_review/**",
+    "/.gitattributes",
+    "/internal-docs",
+    "/internal-docs/**"
+  ],
+  "published_branches": [
+    "main"
+  ],
+  "schema_version": 2,
+  "source_hash": "sha256:98d63916e831f99d0ba9a2af87986c3e5c17a53a19feef3d2bd4d2a420d97afb"
+}
